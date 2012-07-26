@@ -1,3 +1,7 @@
 *.pyc
 *.db
 *.log
+*.mo
+/.settings
+/.project
+/.pydevproject

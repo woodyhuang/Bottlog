@@ -7,6 +7,9 @@ myapp = Bottle()
 import settings
 from utils import execute_sql, LOG
 
+from bottle_i18n import I18NPlugin
+i18n = I18NPlugin(domain='myblog')
+myapp.install(i18n)
 
 @myapp.get('/')
 @view('index')
@@ -33,7 +36,6 @@ def do_post():
 
     redirect('/')
 
-
 @myapp.get('/post/<id>')
 @view('detail')
 def detail(id):
@@ -41,7 +43,11 @@ def detail(id):
     if not len(blogs):
         raise HTTPError(404, 'Blog does not exist.')
     LOG.debug('column created time type: %s', type(blogs[0]['created_time']))
-    return {'blog': blogs[0]}
+    #myapp.set_lang(['jp'])
+    msg = myapp._('test i18n in py')
+    LOG.debug('i18n msg: %s', msg)
+    myapp.set_lang(['ja'])
+    return {'blog': blogs[0], 'msg':msg, '_': myapp._}
 
 
 #@myapp.error(404)

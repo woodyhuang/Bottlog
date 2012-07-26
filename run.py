@@ -8,4 +8,4 @@ bottle.debug(settings.DEBUG)
 if settings.DEBUG:
 	bottle.TEMPLATES.clear()
 
-bottle.run(app=myapp, host='0.0.0.0', port='8080', reloader=settings.DEBUG)
+bottle.run(app=myapp, host='0.0.0.0', port='8080', reloader=False)#settings.DEBUG)

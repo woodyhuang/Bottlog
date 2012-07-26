@@ -4,6 +4,10 @@
 <h1>{{blog['title']}}</h1>
 {{blog['created_time']}}
 <hr/>
+msg: {{msg}}
+<hr/>
+_msg: {{_('test i18n in tpl')}}
+<hr/>
 <div style="boder:1px solid #ccc;">
 {{blog['content']}}
 </div>

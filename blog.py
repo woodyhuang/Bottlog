@@ -5,11 +5,12 @@ from bottle import Bottle, view, request, redirect, static_file, HTTPError
 myapp = Bottle()
 
 import settings
-from utils import execute_sql, LOG
+from utils import LOG, execute_sql
 
 from bottle_i18n import I18NPlugin
 i18n = I18NPlugin(domain='myblog')
 myapp.install(i18n)
+
 
 @myapp.get('/')
 @view('index')
@@ -21,20 +22,44 @@ def index():
 @myapp.get('/post')
 @view('post_form')
 def post_form():
-    return {}
+    return {'blog': {'title':'', 'id':'', 'content':''}}
 
 
 @myapp.post('/post')
 def do_post():
     title = request.forms.title
     content = request.forms.content
-    created_time = datetime.now()
-    modified_time = created_time
-    
-    execute_sql('insert into blog values (?,?,?,?,?)' ,
-                    (None, title, content, created_time, modified_time))
+    id = request.forms.id
+    if not id:
+        LOG.debug('add new post...', id)
+        created_time = datetime.now()
+        modified_time = created_time
+        execute_sql('insert into blog values (?,?,?,?,?)' ,
+                        (None, title, content, created_time, modified_time))
+        redirect('/')
+    else:
+        LOG.debug('post id is: %s', id)
+        modified_time = datetime.now()
+        execute_sql('update blog set title=?, content=?, last_modified_time=? where id=?' ,
+                        (title, content, modified_time, id))
+        redirect('/post/%s' % id)
 
+
+@myapp.get('/post/<id>/delete')
+def delete(id):
+    LOG.info('delete blog #%s', id)
+    execute_sql('delete from blog where id =?', (id,))
     redirect('/')
+
+
+@myapp.get('/post/<id>/edit')
+@view('post_form')
+def edit(id):
+    blogs = execute_sql('select id, title, created_time, content from blog where id =?', (id,))
+    if not len(blogs):
+        raise HTTPError(404, 'Blog does not exist.')
+    return {'blog': blogs[0]}
+
 
 @myapp.get('/post/<id>')
 @view('detail')

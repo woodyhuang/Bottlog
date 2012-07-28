@@ -68,3 +68,24 @@ def execute_sql(sql, args=None):
 
 def wiki2html(wiki_str):
     return HtmlEmitter(creole.Parser(wiki_str).parse()).emit()
+
+MON_NAME = {'01': 'JAN',
+            '02': 'FEB',
+            '03': 'MAR',
+            '04': 'APR',
+            '05': 'MAY',
+            '06': 'JUNE',
+            '07': 'JULY',
+            '08': 'AUG',
+            '09': 'SEPT',
+            '10': 'OCT',
+            '11': 'NOV',
+            '12': 'DEC',}
+def get_month_name(date_str):
+    '''
+    date_str looks like: 2012-04-06 13:29:11.820000
+    '''
+    return MON_NAME.get(date_str.split('-', 2)[1])
+
+def get_day(date_str):
+    return date_str.split('-', 2)[2][:2]

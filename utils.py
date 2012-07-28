@@ -1,6 +1,9 @@
 import sqlite3
 import logging
 
+import creole
+from  creole.html_emitter import HtmlEmitter
+
 from bottle import HTTPError
 
 import settings
@@ -35,6 +38,9 @@ LOG = init_logger() if settings.DEBUG else init_logger(level=logging.INFO)
 
 
 def execute_sql(sql, args=None):
+    '''
+    Return a list as result.
+    '''
     result = None
     
     LOG.debug('sql is : %s' , sql)
@@ -57,5 +63,8 @@ def execute_sql(sql, args=None):
     finally:
         cur.close()
         con.close()
-    
     return result
+
+
+def wiki2html(wiki_str):
+    return HtmlEmitter(creole.Parser(wiki_str).parse()).emit()

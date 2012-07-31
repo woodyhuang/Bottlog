@@ -17,7 +17,7 @@
         </div>
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">提交</button>
-            <button class="btn">取消</button>
+            <button class="btn" onclick="javascript:window.location.href='/post/{{blog["id"]}}';return false;">取消</button>
           </div>
     </fieldset>
     <input type="hidden" name="id" value="{{blog['id']}}"/>
